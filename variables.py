@@ -1,21 +1,22 @@
 import os
 import discord
 from dotenv import load_dotenv
-from main import client
+
+client = discord.Client()
 
 load_dotenv(dotenv_path="config")
 
 guild = client.get_guild(os.getenv('ID_GUILD'))
 
-moi = os.getenv('MOI')
+moi = int(os.getenv('MOI'))
 
-administrator_list = os.getenv('ADMINISTRATOR_LIST')
+administrator_list = [int(os.getenv('ADMINISTRATOR_LIST'))]
 
-message_under_watching = os.getenv('MESSAGE_UNDER_WATCHING')
+message_under_watching = []
 
 roles_in_guild = []
 
-dictionary_emoji_to_roles = os.getenv('DICTIONARY_EMOJIS_ROLES')
+dictionary_emoji_to_roles = {'init': os.getenv('DICTIONARY_EMOJIS_ROLES')}
 
 
 reaction_choosen = []

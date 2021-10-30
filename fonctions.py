@@ -1,6 +1,6 @@
-import discord
-from dotenv import load_dotenv
-import variables_perso as vr
+from discord import Forbidden
+import variables as vr
+import os
 
 
 async def command_reaction(message):
@@ -12,14 +12,15 @@ async def command_reaction(message):
         await message.delete()
 
 
-def clean_up_error(message):
+async def clean_up_error(message):
     if message.content.endswith('Veuillez réessayer après avoir mis des réactions.') and message.author.id == vr.moi:
-        message.delete(5)
+        await message.delete(5)
 
 
 def identify_config_message(message):
     if message.content.startswith('Bonjour !') and message.author.id == vr.moi:
         vr.config_message = message
+        print("Message configuré")
 
 
 async def command_begin_indent(message):
@@ -38,17 +39,18 @@ async def associate_emojis_roles(message):
 
         if vr.i <= len(vr.reaction_choosen)-1:
 
-            await message.channel.send('Bien, à présent quel rôle voulez-vous attribuer à cet emoji : ' + vr.reaction_choosen[i] + "\n*Si vous avez déjà donné un rôle à cet emoji, tapez 'fin'*")
+            await message.channel.send('Bien, à présent quel rôle voulez-vous attribuer à cet emoji : ' + vr.reaction_choosen[vr.i] + "\n*Si vous avez déjà donné un rôle à cet emoji, tapez 'fin'*")
 
             try:
-                vr.temporary_dictionary[vr.reaction_choosen[i]] = message.role_mentions[0]
+                vr.temporary_dictionary[vr.reaction_choosen[vr.i]] = message.role_mentions[0]
             except IndexError:
                 pass
             vr.i += 1
+            print(vr.temporary_dictionary)
 
         else:
             vr.config_roles = False
-            messages_to_suppr = await message.channel.history(limit=len(reaction_choosen_for_message)*2+3).flatten()
+            messages_to_suppr = await message.channel.history(limit=len(vr.reaction_choosen)*2+3).flatten()
 
             for m in messages_to_suppr:
                 await m.delete()
@@ -61,7 +63,7 @@ async def associate_emojis_roles(message):
 
 
 async def add_message_under_watching(message):
-    if message.content.endswith('Buddy') and message.author.id == moi:
+    if message.content.endswith('Buddy') and message.author.id == vr.moi:
 
         vr.message_under_watching.append(message)
         os.environ['MESSAGE_UNDER_WATCHING'] = str(vr.message_under_watching)
@@ -85,7 +87,7 @@ async def add_role(reaction, user):
             await user.add_roles(vr.dictionary_emoji_to_roles[reaction.emoji],reason='A demandé un rôle sous le message !')
         except KeyError:
             pass
-        except discord.error.Forbidden:
+        except Forbidden:
             await reaction.message.channel.send("Le rôle n'a pas pu être ajouté, contacter un administrateur pour plus d'informations.")
             print("Erreur d'attribution")
             pass
@@ -114,7 +116,7 @@ def get_roles(guild):
 
 def reinitialisation():
 
-    vr.reaction_choosen_for_message = []
+    vr.reaction_choosen = []
     vr.config_message = 0
     vr.config_role = False
     vr.content_message_with_reaction = ''

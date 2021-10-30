@@ -1,8 +1,7 @@
 import os
 import discord
 from dotenv import load_dotenv
-import fonctions_perso as fc
-import variables_perso as vr
+import fonctions as fc
 
 load_dotenv(dotenv_path="config")
 
@@ -20,7 +19,7 @@ async def on_message(message):
 
     await fc.clean_up_error(message)
 
-    await fc.identify_config_message(message)
+    fc.identify_config_message(message)
 
     await fc.command_begin_indent(message)
 
@@ -33,7 +32,7 @@ async def on_message(message):
 @client.event
 async def on_reaction_add(reaction, user):
 
-    await fc.add_reaction_to_list(reaction, user)
+    fc.add_reaction_to_list(reaction, user)
 
     await fc.add_role(reaction, user)
 
