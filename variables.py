@@ -16,7 +16,7 @@ message_under_watching = []
 
 roles_in_guild = []
 
-dictionary_emoji_to_roles = {'init': os.getenv('DICTIONARY_EMOJIS_ROLES')}
+dictionary_emoji_to_roles = {}
 
 
 reaction_choosen = []
