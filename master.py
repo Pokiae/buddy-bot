@@ -7,6 +7,7 @@ load_dotenv(dotenv_path="config")
 
 client = discord.Client()
 
+
 @client.event
 async def on_ready():
     print("Le bot est prêt.")
@@ -27,7 +28,11 @@ async def on_message(message):
 
     await fc.add_message_under_watching(message)
 
-    fc.get_info_MPs(message)
+    await fc.get_info_mps(message)
+
+    await fc.registration(message)
+
+    await fc.analyse_answer_password(message)
 
 
 

@@ -4,20 +4,40 @@ import variables as vr
 import os
 
 
-def get_info_MPs(message):
-    if message.channel.type is discord.ChannelType.private:
-        vr.dictionnary_for_all[message.author] = {}
-        vr.dictionnary_for_all[message.author]['requested_roles'] = []
-        for each_key in vr.key_words:
+async def get_info_mps(message):
+    if message.channel.type is discord.ChannelType.private and message.author.id != vr.moi:
+        vr.dictionnary_for_all[message.author.id] = {}
+        vr.dictionnary_for_all[message.author.id]['requested_roles'] = []
+        vr.dictionnary_for_all[message.author.id]['channel'] = message.channel
+        for each_key in vr.dictionnary_pw.keys():
             if each_key in message.content:
-                vr.dictionnary_for_all[message.author]['requested_roles'].append(each_key)
+                vr.dictionnary_for_all[message.author.id]['requested_roles'].append(each_key)
                 print(vr.dictionnary_for_all)
-        if not vr.dictionnary_for_all[message.author]['requested_roles']:
-            vr.dictionnary_for_all.pop(message.author)
-        print(vr.dictionnary_for_all)
+        if not vr.dictionnary_for_all[message.author.id]['requested_roles']:
+            vr.dictionnary_for_all[message.author.id]['requested_roles'] = None
+            return
+        vr.dictionnary_for_all[message.author.id]['registration to do'] = vr.dictionnary_for_all[message.author.id]['requested_roles']
+        vr.registration = True
+        await message.channel.send('Vous avez demandé à avoir le rôle suivant : ' + vr.dictionnary_for_all[message.author.id]['registration to do'][0])
+        print (vr.dictionnary_for_all)
 
 
+async def registration(message):
+    if vr.registration and message.content.startswith('Vous avez demandé à avoir le rôle suivant') and message.author.id == vr.moi:
+        for user in vr.dictionnary_for_all.keys():
+            if vr.dictionnary_for_all[user]['channel'] == message.channel:
+                await vr.dictionnary_for_all[user]['channel'].send('Entrez le mot de passe pour : ' + vr.dictionnary_for_all[user]['registration to do'][0])
+                vr.dictionnary_registration_on_going[user] = vr.dictionnary_for_all[user]['registration to do'][0]
 
+
+async def analyse_answer_password(message):
+    try:
+        if message.content == vr.dictionnary_pw[vr.dictionnary_registration_on_going[message.author.id]]:
+            print(vr.guild)
+            member = vr.guild.get_member(message.author.id)
+            await member.add_roles(vr.guild.get_role(vr.dictionnary_alias_to_roles[vr.dictionnary_registration_on_going[message.author.id]]))
+    except KeyError:
+        pass
 
 
 async def command_reaction(message):
@@ -123,12 +143,6 @@ def remove_reaction_from_list(reaction, user):
     if user.id in vr.administrator_list and reaction.message == vr.config_message:
 
         vr.reaction_choosen.remove(reaction.emoji)
-
-
-def get_roles(guild):
-
-    for each_role in guild.roles:
-        vr.roles_in_guild[each_role.name] = each_role
 
 
 def reinitialisation():
