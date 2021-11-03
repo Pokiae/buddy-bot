@@ -1,6 +1,23 @@
+import discord
 from discord import Forbidden
 import variables as vr
 import os
+
+
+def get_info_MPs(message):
+    if message.channel.type is discord.ChannelType.private:
+        vr.dictionnary_for_all[message.author] = {}
+        vr.dictionnary_for_all[message.author]['requested_roles'] = []
+        for each_key in vr.key_words:
+            if each_key in message.content:
+                vr.dictionnary_for_all[message.author]['requested_roles'].append(each_key)
+                print(vr.dictionnary_for_all)
+        if not vr.dictionnary_for_all[message.author]['requested_roles']:
+            vr.dictionnary_for_all.pop(message.author)
+        print(vr.dictionnary_for_all)
+
+
+
 
 
 async def command_reaction(message):

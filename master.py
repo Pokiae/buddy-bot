@@ -27,6 +27,8 @@ async def on_message(message):
 
     await fc.add_message_under_watching(message)
 
+    fc.get_info_MPs(message)
+
 
 
 @client.event

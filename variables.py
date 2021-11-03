@@ -30,3 +30,8 @@ content_message = ''
 i = 0
 
 temporary_dictionary = {}
+
+
+key_words = ['mdl', 'cvl', 'journal', 'jeux', 'theatre', 'ecodelegue', 'delegue', 'administration', 'ambassadeur']
+
+dictionnary_for_all = {}
