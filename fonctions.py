@@ -4,6 +4,11 @@ import variables as vr
 import os
 
 
+def ready():
+    print("{} est prêt !".format(vr.client.user.name))
+    vr.guild = vr.client.get_guild(900780989683499079)
+
+
 async def get_info_mps(message):
     if message.channel.type is discord.ChannelType.private and message.author.id != vr.moi:
         vr.dictionnary_for_all[message.author.id] = {}
@@ -12,14 +17,13 @@ async def get_info_mps(message):
         for each_key in vr.dictionnary_pw.keys():
             if each_key in message.content:
                 vr.dictionnary_for_all[message.author.id]['requested_roles'].append(each_key)
-                print(vr.dictionnary_for_all)
         if not vr.dictionnary_for_all[message.author.id]['requested_roles']:
             vr.dictionnary_for_all[message.author.id]['requested_roles'] = None
             return
         vr.dictionnary_for_all[message.author.id]['registration to do'] = vr.dictionnary_for_all[message.author.id]['requested_roles']
         vr.registration = True
         await message.channel.send('Vous avez demandé à avoir le rôle suivant : ' + vr.dictionnary_for_all[message.author.id]['registration to do'][0])
-        print (vr.dictionnary_for_all)
+        print(vr.dictionnary_for_all)
 
 
 async def registration(message):
@@ -33,7 +37,6 @@ async def registration(message):
 async def analyse_answer_password(message):
     try:
         if message.content == vr.dictionnary_pw[vr.dictionnary_registration_on_going[message.author.id]]:
-            print(vr.guild)
             member = vr.guild.get_member(message.author.id)
             await member.add_roles(vr.guild.get_role(vr.dictionnary_alias_to_roles[vr.dictionnary_registration_on_going[message.author.id]]))
     except KeyError:
@@ -57,7 +60,6 @@ async def clean_up_error(message):
 def identify_config_message(message):
     if message.content.startswith('Bonjour !') and message.author.id == vr.moi:
         vr.config_message = message
-        print("Message configuré")
 
 
 async def command_begin_indent(message):
@@ -83,7 +85,6 @@ async def associate_emojis_roles(message):
             except IndexError:
                 pass
             vr.i += 1
-            print(vr.temporary_dictionary)
 
         else:
             vr.config_roles = False
@@ -104,7 +105,6 @@ async def add_message_under_watching(message):
 
         vr.message_under_watching.append(message)
         os.environ['MESSAGE_UNDER_WATCHING'] = str(vr.message_under_watching)
-        print('Je suis en train de mettre des réactions')
 
         for each_reaction in vr.reaction_choosen:
             await message.add_reaction(each_reaction)

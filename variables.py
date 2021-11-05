@@ -2,12 +2,13 @@ import os
 import discord
 from dotenv import load_dotenv
 
-
-client = discord.Client()
+intents = discord.Intents.default()
+intents.members = True
+client = discord.Client(intents=intents)
 
 load_dotenv(dotenv_path="config")
-#int(os.getenv('ID_GUILD'))
-guild = client.get_guild(900780989683499079)
+
+guild = 0
 
 moi = int(os.getenv('MOI'))
 
@@ -41,4 +42,4 @@ registration = False
 
 dictionnary_registration_on_going = {}
 
-dictionnary_alias_to_roles = {'mdl': 901476152433078303, 'cvl': 903671942580666409}
+dictionnary_alias_to_roles = {'mdl': 903672011958653018, 'cvl': 903671942580666409}

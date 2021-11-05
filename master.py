@@ -1,16 +1,16 @@
 import os
-import discord
 from dotenv import load_dotenv
 import fonctions as fc
+import variables as vr
 
 load_dotenv(dotenv_path="config")
 
-client = discord.Client()
+client = vr.client
 
 
 @client.event
 async def on_ready():
-    print("Le bot est prêt.")
+    fc.ready()
 
 
 @client.event
