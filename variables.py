@@ -16,7 +16,7 @@ administrator_list = [int(os.getenv('ADMINISTRATOR_LIST'))]
 
 message_under_watching = []
 
-dictionary_emoji_to_roles = {}
+emoji_to_roles = {}
 
 entry_message = 897906221196148766
 
@@ -31,19 +31,17 @@ content_message = ''
 
 i = 0
 
-temporary_dictionary = {}
-
 
 key_words = ['mdl', 'cvl', 'journal', 'jeux', 'theatre', 'ecodelegue', 'delegue', 'administration', 'ambassadeur']
 
-dictionary_for_all = {}
+user_infos = {}
 
-dictionary_pw = {"mdl": "1234", "cvl": 'joli mot de passe'}
+passwords = {"mdl": "1234", "cvl": 'joli mot de passe'}
 
-registration = {}
+is_registrating = {}
 
-dictionary_registration_on_going = {}
+alias_to_roles = {'mdl': 901476152433078303, 'cvl': 903671942580666409}
 
-dictionary_alias_to_roles = {'mdl': 903672011958653018, 'cvl': 903671942580666409}
+sentence_requested_role = "```\nVous avez demandé à avoir le rôle suivant : "
 
 

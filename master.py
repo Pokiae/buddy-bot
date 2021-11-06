@@ -28,11 +28,12 @@ async def on_message(message):
 
     await fc.add_message_under_watching(message)
 
+    await fc.analyse_answer_password(message)
+
     await fc.get_info_mps(message)
 
     await fc.registration(message)
 
-    await fc.analyse_answer_password(message)
 
 
 
