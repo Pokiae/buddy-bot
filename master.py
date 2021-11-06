@@ -43,6 +43,8 @@ async def on_reaction_add(reaction, user):
 
     await fc.add_role(reaction, user)
 
+    #await fc.giving_entry_permissions(reaction, user)
+
 
 @client.event
 async def on_reaction_remove(reaction, user):
@@ -50,6 +52,8 @@ async def on_reaction_remove(reaction, user):
     await fc.remove_role(reaction, user)
 
     await fc.remove_reaction_from_list(reaction, user)
+
+    #await fc.removing_entry_permissions(reaction, user)
 
 
 

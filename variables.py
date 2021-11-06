@@ -18,6 +18,8 @@ message_under_watching = []
 
 dictionary_emoji_to_roles = {}
 
+entry_message = 897906221196148766
+
 
 reaction_choosen = []
 
@@ -34,12 +36,14 @@ temporary_dictionary = {}
 
 key_words = ['mdl', 'cvl', 'journal', 'jeux', 'theatre', 'ecodelegue', 'delegue', 'administration', 'ambassadeur']
 
-dictionnary_for_all = {}
+dictionary_for_all = {}
 
-dictionnary_pw = {"mdl": "1234", "cvl": 'joli mot de passe'}
+dictionary_pw = {"mdl": "1234", "cvl": 'joli mot de passe'}
 
-registration = False
+registration = {}
 
-dictionnary_registration_on_going = {}
+dictionary_registration_on_going = {}
 
-dictionnary_alias_to_roles = {'mdl': 903672011958653018, 'cvl': 903671942580666409}
+dictionary_alias_to_roles = {'mdl': 903672011958653018, 'cvl': 903671942580666409}
+
+

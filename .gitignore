@@ -1,3 +1,4 @@
 config
 *pokiae*
 __pycache__/*
+.idea/*

@@ -1,3 +1,5 @@
+import zoneinfo
+
 import discord
 from discord import Forbidden
 import variables as vr
@@ -9,36 +11,83 @@ def ready():
     vr.guild = vr.client.get_guild(900780989683499079)
 
 
+#async def giving_entry_permissions(reaction, user):
+    #if reaction.message.id == vr.entry_message:
+        #await user.add_roles(vr.guild.get_role(895348987232653445))
+        #await user.remove_roles(vr.guild.get_role(900736184207163393))
+
+
+#async def removing_entry_permissions(reaction, user):
+    #if reaction.message.id == vr.entry_message:
+        #await user.add_roles(vr.guild.get_role(900736184207163393))
+
+
 async def get_info_mps(message):
-    if message.channel.type is discord.ChannelType.private and message.author.id != vr.moi:
-        vr.dictionnary_for_all[message.author.id] = {}
-        vr.dictionnary_for_all[message.author.id]['requested_roles'] = []
-        vr.dictionnary_for_all[message.author.id]['channel'] = message.channel
-        for each_key in vr.dictionnary_pw.keys():
-            if each_key in message.content:
-                vr.dictionnary_for_all[message.author.id]['requested_roles'].append(each_key)
-        if not vr.dictionnary_for_all[message.author.id]['requested_roles']:
-            vr.dictionnary_for_all[message.author.id]['requested_roles'] = None
-            return
-        vr.dictionnary_for_all[message.author.id]['registration to do'] = vr.dictionnary_for_all[message.author.id]['requested_roles']
-        vr.registration = True
-        await message.channel.send('Vous avez demandé à avoir le rôle suivant : ' + vr.dictionnary_for_all[message.author.id]['registration to do'][0])
-        print(vr.dictionnary_for_all)
+    user = message.author.id
+    if message.channel.type is discord.ChannelType.private and user != vr.moi:
+        try:
+            if vr.dictionary_for_all[user]:
+                return
+        except KeyError:
+            vr.dictionary_for_all[user] = {}
+            vr.dictionary_for_all[user]['requested_roles'] = []
+            vr.dictionary_for_all[user]['channel'] = message.channel
+            vr.dictionary_for_all[user]['tentative'] = 3
+            for each_key in vr.dictionary_pw.keys():
+                if each_key in message.content:
+                    vr.dictionary_for_all[user]['requested_roles'].append(each_key)
+            if not vr.dictionary_for_all[user]['requested_roles']:
+                del[vr.dictionary_for_all[user]]
+                return
+            vr.dictionary_for_all[user]['registration_to_do'] = vr.dictionary_for_all[user]['requested_roles']
+            vr.registration[user] = True
+            await message.channel.send(f"Vous avez demandé à avoir le rôle suivant : "
+                                       f"{vr.dictionary_for_all[user]['registration_to_do'][0]}")
+            print(vr.dictionary_for_all)
 
 
 async def registration(message):
-    if vr.registration and message.content.startswith('Vous avez demandé à avoir le rôle suivant') and message.author.id == vr.moi:
-        for user in vr.dictionnary_for_all.keys():
-            if vr.dictionnary_for_all[user]['channel'] == message.channel:
-                await vr.dictionnary_for_all[user]['channel'].send('Entrez le mot de passe pour : ' + vr.dictionnary_for_all[user]['registration to do'][0])
-                vr.dictionnary_registration_on_going[user] = vr.dictionnary_for_all[user]['registration to do'][0]
+    if message.channel.type is discord.ChannelType.private and vr.registration[message.channel.recipient.id] and message.content.startswith('Vous avez demandé à avoir le rôle suivant') and message.author.id == vr.moi:
+        for user in vr.dictionary_for_all.keys():
+            if vr.dictionary_for_all[user]['channel'] == message.channel:
+                await vr.dictionary_for_all[user]['channel'].send('Entrez le mot de passe pour : {}'.format(vr.dictionary_for_all[user]['registration_to_do'][0]))
+                vr.dictionary_registration_on_going[user] = vr.dictionary_for_all[user]['registration_to_do'][0]
+
+
+async def try_next_role_password(message):
+    user = message.author.id
+    print(user)
+    try:
+        await message.channel.send("Vous avez demandé à avoir le rôle suivant : {}".format(vr.dictionary_for_all[user]['registration_to_do'][0]))
+    except IndexError:
+        await message.channel.send("Fin de l'attribution des rôles, si vous n'avez pas eu tous les rôles nécessaires, veuillez patienter 1h avant de réessayer ou contacter un administrateur du serveur.")
+        print('ici')
+        #vr.dictionnary_for_all[user]['Try Time'] = ZoneInfo('Europe/Paris')
+        print(vr.dictionary_for_all)
+        vr.registration[user] = False
+        vr.dictionary_for_all[user]['requested_roles'].clear()
+        print(vr.registration)
 
 
 async def analyse_answer_password(message):
+    user = message.author.id
     try:
-        if message.content == vr.dictionnary_pw[vr.dictionnary_registration_on_going[message.author.id]]:
-            member = vr.guild.get_member(message.author.id)
-            await member.add_roles(vr.guild.get_role(vr.dictionnary_alias_to_roles[vr.dictionnary_registration_on_going[message.author.id]]))
+        if vr.registration[user] and message.channel.type is discord.ChannelType.private and message.content == vr.dictionary_pw[vr.dictionary_registration_on_going[user]]:
+            member = vr.guild.get_member(user)
+            await member.add_roles(vr.guild.get_role(vr.dictionary_alias_to_roles[vr.dictionary_registration_on_going[user]]))
+            vr.dictionary_for_all[user]['tentative'] = 3
+            vr.dictionary_for_all[user]['registration_to_do'].pop(0)
+            await try_next_role_password(message)
+
+        elif vr.registration[user] and message.channel.type is discord.ChannelType.private and vr.dictionary_for_all[user]['tentative'] > 0:
+            await message.channel.send("Le mot de passe n'est pas le bon, il vous reste {} tentatives.".format(vr.dictionary_for_all[user]['tentative']))
+            vr.dictionary_for_all[user]['tentative'] -= 1
+
+        elif vr.registration[user] and message.channel.type is discord.ChannelType.private and vr.dictionary_for_all[user]['tentative'] == 0:
+            await message.channel.send("Vous avez épuisé toutes vos tentatives, la demande du rôle {} est annulées, vous pourrez la reprendre plus tard.".format(vr.dictionary_registration_on_going[message.author.id]))
+            vr.dictionary_for_all[user]['tentative'] = 3
+            vr.dictionary_for_all[user]['registration_to_do'].pop(0)
+            await try_next_role_password(message)
     except KeyError:
         pass
 
