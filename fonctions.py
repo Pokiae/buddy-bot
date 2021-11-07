@@ -9,15 +9,32 @@ def ready():
     vr.guild = vr.client.get_guild(900780989683499079)
 
 
-#async def giving_entry_permissions(reaction, user):
-    #if reaction.message.id == vr.entry_message:
-        #await user.add_roles(vr.guild.get_role(895348987232653445))
-        #await user.remove_roles(vr.guild.get_role(900736184207163393))
+async def scan_guild():
+    channel = vr.guild.get_channel(vr.rules_channel)
+    rule_message = await channel.fetch_message(vr.entry_message)
+    rule_reaction = rule_message.reactions
+    reacted_users = await rule_reaction.users().flatten()
+    for members in vr.guild.fetch_members():
+        if members in reacted_users:
+            pass
+        else:
+            await members.add_roles(vr.guild.get_role(901476152433078303))
 
 
-#async def removing_entry_permissions(reaction, user):
-    #if reaction.message.id == vr.entry_message:
-        #await user.add_roles(vr.guild.get_role(900736184207163393))
+async def giving_entry_permissions(reaction, user):
+    is_message_entry = reaction.message.id == vr.entry_message
+    is_reaction_coche = reaction.emoji.id == vr.coche_id
+    if is_message_entry and is_reaction_coche:
+        await user.add_roles(vr.guild.get_role(895348987232653445))
+        await user.remove_roles(vr.guild.get_role(900736184207163393))
+
+
+async def removing_entry_permissions(reaction, user):
+    is_message_entry = reaction.message.id == vr.entry_message
+    is_reaction_coche = reaction.emoji.id == vr.coche_id
+    if is_message_entry and is_reaction_coche:
+        await user.add_roles(vr.guild.get_role(900736184207163393))
+
 
 async def get_roles_requested(message):
     user = message.author.id

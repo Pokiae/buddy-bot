@@ -18,7 +18,6 @@ message_under_watching = []
 
 emoji_to_roles = {}
 
-entry_message = 897906221196148766
 
 
 reaction_choosen = []
@@ -44,4 +43,9 @@ alias_to_roles = {'mdl': 901476152433078303, 'cvl': 903671942580666409}
 
 sentence_requested_role = "```\nVous avez demandé à avoir le rôle suivant : "
 
+coche_id = 906823454664310794
+
+rules_channel = 900814173754261515
+
+entry_message = 906823454664310794
 
