@@ -11,7 +11,7 @@ client = vr.client
 @client.event
 async def on_ready():
     fc.ready()
-    await fc.scan_guild()
+    await fc.giving_all_member_arriving_role()
 
 
 @client.event

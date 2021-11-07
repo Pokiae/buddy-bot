@@ -19,7 +19,6 @@ message_under_watching = []
 emoji_to_roles = {}
 
 
-
 reaction_choosen = []
 
 config_message = 0
@@ -35,7 +34,9 @@ key_words = ['mdl', 'cvl', 'journal', 'jeux', 'theatre', 'ecodelegue', 'delegue'
 
 user_infos = {}
 
-passwords = {"mdl": "1234", "cvl": 'joli mot de passe'}
+passwords = {"mdl": "FRJA6gVhSZPA",
+             "cvl": "YJU6skvvwXVC",
+             "journal":"123"}
 
 is_registrating = {}
 
@@ -43,9 +44,13 @@ alias_to_roles = {'mdl': 901476152433078303, 'cvl': 903671942580666409}
 
 sentence_requested_role = "```\nVous avez demandé à avoir le rôle suivant : "
 
-coche_id = 906823454664310794
+coche_id = None
 
 rules_channel = 900814173754261515
 
 entry_message = 906823454664310794
+
+arriving_role_id = 901476152433078303
+
+member_role_id = 0
 

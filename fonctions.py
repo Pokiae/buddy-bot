@@ -9,31 +9,51 @@ def ready():
     vr.guild = vr.client.get_guild(900780989683499079)
 
 
-async def scan_guild():
+async def giving_all_member_arriving_role():
+    get_icone_id()
+    member_reacted = await get_member_reacted()
+    for member in vr.guild.members:
+        if member.id != vr.moi and member not in member_reacted: await member.add_roles(vr.guild.get_role(vr.arriving_role_id))
+
+
+def get_icone_id():
+    guild_emojis = vr.guild.emojis
+    for emoji in guild_emojis:
+        if emoji.name.startswith("icne"):
+            vr.coche_id = emoji.id
+
+
+async def get_member_reacted():
     channel = vr.guild.get_channel(vr.rules_channel)
     rule_message = await channel.fetch_message(vr.entry_message)
-    rule_reaction = rule_message.reactions
-    reacted_users = await rule_reaction.users().flatten()
-    for members in vr.guild.fetch_members():
-        if members in reacted_users:
+    rule_reactions = rule_message.reactions
+    for reaction in rule_reactions:
+        try:
+            if reaction.emoji.id == vr.coche_id:
+                member_reacted = await reaction.users().flatten()
+                print(member_reacted)
+            return member_reacted
+        except AttributeError:
+            print("Error: no id")
             pass
-        else:
-            await members.add_roles(vr.guild.get_role(901476152433078303))
+        except UnboundLocalError:
+            print("Error: coche_reaction not found")
+            return None
 
 
 async def giving_entry_permissions(reaction, user):
     is_message_entry = reaction.message.id == vr.entry_message
     is_reaction_coche = reaction.emoji.id == vr.coche_id
     if is_message_entry and is_reaction_coche:
-        await user.add_roles(vr.guild.get_role(895348987232653445))
-        await user.remove_roles(vr.guild.get_role(900736184207163393))
+        await user.add_roles(vr.guild.get_role(vr.member_role_id))
+        await user.remove_roles(vr.guild.get_role(vr.arriving_role_id))
 
 
 async def removing_entry_permissions(reaction, user):
     is_message_entry = reaction.message.id == vr.entry_message
     is_reaction_coche = reaction.emoji.id == vr.coche_id
     if is_message_entry and is_reaction_coche:
-        await user.add_roles(vr.guild.get_role(900736184207163393))
+        await user.add_roles(vr.guild.get_role(vr.arriving_role_id))
 
 
 async def get_roles_requested(message):
@@ -60,12 +80,13 @@ async def get_roles_requested(message):
     else:
         vr.is_registrating[user] = False
 
+
 async def get_info_mps(message):
 
     user = message.author.id
     is_channel_private = message.channel.type is discord.ChannelType.private
     is_not_my_message = user != vr.moi
-    is_user_not_in_database = vr.user_infos.get(user) == None
+    is_user_not_in_database = vr.user_infos.get(user) is None
     print(vr.user_infos.get(user))
     member = vr.guild.get_member(user)
 
