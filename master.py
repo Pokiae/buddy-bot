@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import fonctions as fc
 import variables as vr
 
-load_dotenv(dotenv_path="config")
+load_dotenv(dotenv_path=".env")
 
 client = vr.client
 

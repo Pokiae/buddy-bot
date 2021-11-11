@@ -6,7 +6,7 @@ intents = discord.Intents.default()
 intents.members = True
 client = discord.Client(intents=intents)
 
-load_dotenv(dotenv_path="config")
+load_dotenv(dotenv_path=".env")
 
 guild = 0
 
