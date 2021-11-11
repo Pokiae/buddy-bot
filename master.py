@@ -11,51 +11,33 @@ client = vr.client
 @client.event
 async def on_ready():
     fc.ready()
+    fc.initiate_admin_list()
     await fc.giving_all_member_arriving_role()
 
 
 @client.event
 async def on_message(message):
-
-    await fc.command_reaction(message)
-
-    await fc.clean_up_error(message)
-
-    fc.identify_config_message(message)
-
-    await fc.command_begin_indent(message)
-
-    await fc.associate_emojis_roles(message)
-
-    await fc.add_message_under_watching(message)
-
-    await fc.analyse_answer_password(message)
-
-    await fc.get_info_mps(message)
-
     await fc.registration(message)
-
-
-
-
-@client.event
-async def on_reaction_add(reaction, user):
-
-    fc.add_reaction_to_list(reaction, user)
-
-    await fc.add_role(reaction, user)
-
-    await fc.giving_entry_permissions(reaction, user)
+    await fc.analyse_answer_password(message)
+    await fc.get_info_mps(message)
+    fc.command_add_admin(message)
 
 
 @client.event
-async def on_reaction_remove(reaction, user):
+async def on_raw_reaction_add(payload):
+    await fc.giving_entry_permissions(payload)
+    await fc.message_watching_on_add(payload)
 
-    await fc.remove_role(reaction, user)
 
-    await fc.remove_reaction_from_list(reaction, user)
+@client.event
+async def on_raw_reaction_remove(payload):
+    await fc.removing_entry_permissions(payload)
+    await fc.message_watching_on_remove(payload)
 
-    await fc.removing_entry_permissions(reaction, user)
+
+@client.event
+async def on_member_remove(member):
+    fc.remove_on_leaving(member)
 
 
 client.run(os.getenv("TOKEN"))
