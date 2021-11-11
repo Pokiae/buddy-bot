@@ -1,5 +1,4 @@
-message_under_watching = []
-emoji_to_roles = {}
+message_under_watching = {}
 id_guild = 900780989683499079
 moi = 900743753277530243
 administrator_list = [644270121770156042]
