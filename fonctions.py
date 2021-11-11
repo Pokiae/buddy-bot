@@ -198,6 +198,49 @@ async def analyse_answer_password(message):
         pass
 
 
+def key_emoji(emoji):
+    if isinstance(emoji, int):
+        return emoji
+    else:
+        return emoji.id
+
+
+async def message_watching_on_add(reaction, user):
+    message = reaction.message.id
+    emoji = key_emoji(reaction.emoji)
+    if message in cf.message_under_watching.keys():
+        if emoji in cf.message_under_watching[message].keys():
+            await user.add_roles(vr.guild.get_role(cf.message_under_watching[message][emoji]))
+
+
+async def message_watching_on_remove(reaction, user):
+    message = reaction.message.id
+    emoji = key_emoji(reaction.emoji)
+    if message in cf.message_under_watching.keys():
+        if emoji in cf.message_under_watching[message].keys():
+            await user.remove_roles(vr.guild.get_role(cf.message_under_watching[message][emoji]))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 async def command_reaction(message):
 
     is_command_called = message.content.startswith("$reac")
