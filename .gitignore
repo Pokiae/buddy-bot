@@ -1,3 +1,5 @@
-config
+buddy_secret.txt
+.env
 *pokiae*
 __pycache__/*
+.idea/*

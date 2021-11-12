@@ -2,31 +2,31 @@ import os
 import discord
 from dotenv import load_dotenv
 
-client = discord.Client()
+intents = discord.Intents.all()
+client = discord.Client(intents=intents)
 
-load_dotenv(dotenv_path="config")
+load_dotenv(dotenv_path=".env")
 
-guild = client.get_guild(os.getenv('ID_GUILD'))
-
-moi = int(os.getenv('MOI'))
-
-administrator_list = [int(os.getenv('ADMINISTRATOR_LIST'))]
-
-message_under_watching = []
-
-roles_in_guild = []
-
-dictionary_emoji_to_roles = {'init': os.getenv('DICTIONARY_EMOJIS_ROLES')}
-
+guild = 0
 
 reaction_choosen = []
-
 config_message = 0
-
 config_role = False
-
 content_message = ''
-
 i = 0
 
-temporary_dictionary = {}
+
+key_words = ['mdl', 'cvl', 'journal', 'jeux', 'theatre', 'ecodelegue', 'delegue', 'administration', 'ambassadeur']
+passwords = {"mdl": os.getenv("PASS_MDL"),
+             "cvl": os.getenv("PASS_CVL"),
+             "journal": os.getenv("PASS_JOURNAL"),
+             'jeux': os.getenv("PASS_JEUX"),
+             'theatre': os.getenv("PASS_THEATRE"),
+             'ecodelegue': os.getenv("PASS_ECODELEGUE"),
+             'delegue': os.getenv("PASS_DELEGUE"),
+             'administration': os.getenv("PASS_ADMDINISTRATION"),
+             'ambassadeur': os.getenv("PASS_AMBASSADEUR")}
+
+is_registrating = {}
+sentence_requested_role = "```\nVous avez demandé à avoir le rôle suivant : "
+coche_id = None
