@@ -137,7 +137,7 @@ async def get_info_mps(message):
 async def registration(message):
     is_private_channel = message.channel.type is discord.ChannelType.private
     try:
-        is_registrating = vr.is_registrating[message.author.id]
+        is_registrating = vr.is_registrating[message.channel.recipient.id]
         print(is_registrating)
         user_has_requested_role = message.content.startswith(vr.sentence_requested_role)
         print(user_has_requested_role)
@@ -255,16 +255,6 @@ def remove_on_leaving(member):
         cf.user_infos.pop(member.id)
 
 
-def command_add_admin(message):
-    if message.content.startswith('$add_admin$'):
-        content = message.content.replace('$add_admin$', '')
-        admin_to_add = content.split('$')
-        admin_to_add = check_if_admin_real(admin_to_add)
-        add_admin(admin_to_add)
-        with open('ADMIN.pickle', 'wb') as f:
-            pickle.dump(cf.administrator_list, f)
-
-
 def check_if_admin_real(admin_to_add):
     for admin in admin_to_add:
         try:
@@ -273,8 +263,3 @@ def check_if_admin_real(admin_to_add):
         except TypeError:
             admin_to_add.remove(admin)
     return admin_to_add
-
-
-def add_admin(admin_to_add):
-    for admin in admin_to_add:
-        cf.administrator_list.append(admin)

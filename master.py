@@ -20,7 +20,6 @@ async def on_message(message):
     await fc.registration(message)
     await fc.analyse_answer_password(message)
     await fc.get_info_mps(message)
-    fc.command_add_admin(message)
 
 
 @client.event

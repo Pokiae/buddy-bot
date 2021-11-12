@@ -8,5 +8,3 @@ rules_channel = 900814173754261515
 entry_message = 906823454664310794
 arriving_role_id = 901476152433078303
 basic_member_role_id = 0
-
-administrator_list = [644270121770156042]

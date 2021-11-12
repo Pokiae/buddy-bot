@@ -3,10 +3,6 @@ import discord
 from dotenv import load_dotenv
 
 intents = discord.Intents.all()
-#intents.members = True
-#intents.guilds = True
-#intents.reactions = True
-#intents.messages = True
 client = discord.Client(intents=intents)
 
 load_dotenv(dotenv_path=".env")
