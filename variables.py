@@ -9,13 +9,6 @@ load_dotenv(dotenv_path=".env")
 
 guild = 0
 
-reaction_choosen = []
-config_message = 0
-config_role = False
-content_message = ''
-i = 0
-
-
 key_words = ['mdl', 'cvl', 'journal', 'jeux', 'theatre', 'ecodelegue', 'delegue', 'administration', 'ambassadeur']
 passwords = {"mdl": os.getenv("PASS_MDL"),
              "cvl": os.getenv("PASS_CVL"),
