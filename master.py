@@ -11,7 +11,6 @@ client = vr.client
 @client.event
 async def on_ready():
     fc.ready()
-    fc.initiate_admin_list()
     await fc.giving_all_member_arriving_role()
 
 

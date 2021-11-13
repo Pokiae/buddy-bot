@@ -4,7 +4,6 @@ from discord import Forbidden
 import variables as vr
 import config as cf
 import hashlib
-import pickle
 
 
 def ready():
@@ -12,19 +11,15 @@ def ready():
     vr.guild = vr.client.get_guild(cf.id_guild)
 
 
-def initiate_admin_list():
-    try:
-        with open('ADMIN.pickle', 'rb') as f:
-            cf.administrator_list = pickle.load(f)
-    except FileNotFoundError:
-        pass
-
-
 async def giving_all_member_arriving_role():
     get_icone_id()
     member_reacted = await get_member_reacted()
-    for member in vr.guild.members:
-        if member.id != cf.moi and member not in member_reacted: await member.add_roles(vr.guild.get_role(cf.arriving_role_id))
+    if member_reacted is None:
+        for member in vr.guild.members:
+            if member.id != cf.moi: await member.add_roles(vr.guild.get_role(cf.arriving_role_id))
+    else:
+        for member in vr.guild.members:
+            if member.id != cf.moi and member not in member_reacted: await member.add_roles(vr.guild.get_role(cf.arriving_role_id))
 
 
 def get_icone_id():
@@ -54,7 +49,7 @@ async def giving_entry_permissions(payload):
     is_message_entry = payload.message_id == cf.entry_message
     is_reaction_coche = payload.emoji.id == vr.coche_id
     if is_message_entry and is_reaction_coche:
-        await payload.member.add_roles(vr.guild.get_role(cf.basic_member_role_id))
+        #await payload.member.add_roles(vr.guild.get_role(cf.basic_member_role_id))
         await payload.member.remove_roles(vr.guild.get_role(cf.arriving_role_id))
 
 
@@ -62,7 +57,8 @@ async def removing_entry_permissions(payload):
     is_message_entry = payload.message_id == cf.entry_message
     is_reaction_coche = payload.emoji.id == vr.coche_id
     if is_message_entry and is_reaction_coche:
-        await payload.member.add_roles(vr.guild.get_role(cf.arriving_role_id))
+        member = vr.guild.get_member(payload.user_id)
+        await member.add_roles(vr.guild.get_role(cf.arriving_role_id))
 
 
 async def get_roles_requested(message):
