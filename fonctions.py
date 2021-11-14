@@ -49,7 +49,7 @@ async def giving_entry_permissions(payload):
     is_message_entry = payload.message_id == cf.entry_message
     is_reaction_coche = payload.emoji.id == vr.coche_id
     if is_message_entry and is_reaction_coche:
-        #await payload.member.add_roles(vr.guild.get_role(cf.basic_member_role_id))
+        await payload.member.add_roles(vr.guild.get_role(cf.basic_member_role_id))
         await payload.member.remove_roles(vr.guild.get_role(cf.arriving_role_id))
 
 
@@ -251,11 +251,5 @@ def remove_on_leaving(member):
         cf.user_infos.pop(member.id)
 
 
-def check_if_admin_real(admin_to_add):
-    for admin in admin_to_add:
-        try:
-            if vr.guild.get_member(int(admin)) is None:
-                admin_to_add.remove(admin)
-        except TypeError:
-            admin_to_add.remove(admin)
-    return admin_to_add
+async def add_on_arriving(member):
+    await member.add_roles(vr.guild.get_role(cf.arriving_role_id))
