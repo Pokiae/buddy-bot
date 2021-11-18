@@ -25,7 +25,7 @@ async def giving_all_member_arriving_role():
 def get_icone_id():
     guild_emojis = vr.guild.emojis
     for emoji in guild_emojis:
-        if emoji.name.startswith("icne"):
+        if emoji.name.startswith("coche"):
             vr.coche_id = emoji.id
 
 
@@ -71,12 +71,18 @@ async def get_roles_requested(message):
         del[cf.user_infos[user]]
         return
     for requested_role in cf.user_infos[user]['requested_roles']:
+        print(requested_role)
         for role in cf.user_infos[user]['roles']:
+            print(role)
             role_id = role.id
-            if role_id in cf.alias_to_roles.values():
+            print(cf.alias_to_roles[requested_role] == role_id)
+            if cf.alias_to_roles[requested_role] == role_id is True:
                 cf.user_infos[user]['requested_roles'].remove(requested_role)
+                print("je suis passé")
                 await cf.user_infos[user]['channel'].send(f"```\nVous possédez déjà le rôle {requested_role}.\n```")
-        print(cf.user_infos[user]['requested_roles'])
+            else:
+                print("Je passe")
+                pass
     is_requested_role_full = cf.user_infos[user]['requested_roles']
     if is_requested_role_full:
         vr.is_registrating[user] = True
@@ -131,27 +137,22 @@ async def get_info_mps(message):
 
 
 async def registration(message):
-    is_private_channel = message.channel.type is discord.ChannelType.private
-    try:
-        is_registrating = vr.is_registrating[message.channel.recipient.id]
-        print(is_registrating)
-        user_has_requested_role = message.content.startswith(vr.sentence_requested_role)
-        print(user_has_requested_role)
-        print(vr.sentence_requested_role)
-        print(message.content)
-        is_my_message = message.author.id == cf.moi
-        print(message.author.id)
-        if is_private_channel and is_registrating and user_has_requested_role and is_my_message:
-            for user in cf.user_infos.keys():
-                if cf.user_infos[user]['channel'] == message.channel:
-                    requested_role = vr.guild.get_role(cf.alias_to_roles[cf.user_infos[user]['requested_roles'][0]])
-                    requested_role = requested_role.name
-                    await cf.user_infos[user]['channel'].send(f"```\nEntrez le mot de passe pour : "
-                                                              f"{requested_role} "
-                                                              f"({cf.user_infos[user]['requested_roles'][0]})\n```")
-    except KeyError:
-        print("Key_error")
-        pass
+    if message.channel.type is discord.ChannelType.private:
+        try:
+            is_registrating = vr.is_registrating[message.channel.recipient.id]
+            user_has_requested_role = message.content.startswith(vr.sentence_requested_role)
+            is_my_message = message.author.id == cf.moi
+            if is_registrating and user_has_requested_role and is_my_message:
+                for user in cf.user_infos.keys():
+                    if cf.user_infos[user]['channel'] == message.channel:
+                        requested_role = vr.guild.get_role(cf.alias_to_roles[cf.user_infos[user]['requested_roles'][0]])
+                        print(requested_role)
+                        requested_role = requested_role.name
+                        await cf.user_infos[user]['channel'].send(f"```\nEntrez le mot de passe pour : "
+                                                                  f"{requested_role} "
+                                                                  f"({cf.user_infos[user]['requested_roles'][0]})\n```")
+        except KeyError:
+            pass
 
 
 async def try_next_role_password(message):
@@ -176,36 +177,38 @@ async def analyse_answer_password(message):
     is_channel_private = message.channel.type is discord.ChannelType.private
     try :
         try_password = bytes(message.content, encoding='ascii')
-        try_password = hashlib.sha256(try_password).hexdigest()
+        try_password = str(hashlib.sha256(try_password).hexdigest())
+        print("mauvais mot de passe :" +try_password)
+        print("bon mot de passe :" + vr.passwords[cf.user_infos[user]['requested_roles'][0]])
 
         is_registrating = vr.is_registrating[user]
         is_password_correct = try_password == vr.passwords[cf.user_infos[user]['requested_roles'][0]]
+        print(is_password_correct)
         how_many_tentative_left = cf.user_infos[user]['tentative']
 
-        if is_registrating and is_channel_private and is_password_correct:
+        if is_registrating and is_channel_private and is_password_correct and user != cf.moi:
             member = vr.guild.get_member(user)
             requested_role = vr.guild.get_role(cf.alias_to_roles[cf.user_infos[user]['requested_roles'][0]])
 
             try:
                 await member.add_roles(requested_role)
-                cf.user_infos[user]['roles'].append(requested_role)
                 await cf.user_infos[user]['channel'].send(f"```\nLe rôle : *{requested_role}* "
                                                           f"vous a été attribué avec succès\n```")
             except Forbidden:
                 await cf.user_infos[user]['channel'].send(f"```\nErreur de permissions pour le rôle *{requested_role}*,"
-                                                          f" contactez un administrateur pour lui en faire part.\n```")
+                                                          f" contactez un développeur pour lui en faire part.\n```")
                 pass
             cf.user_infos[user]['tentative'] = 3
             cf.user_infos[user]['requested_roles'].pop(0)
 
             await try_next_role_password(message)
 
-        elif is_registrating and is_channel_private and how_many_tentative_left > 0:
+        elif is_registrating and is_channel_private and how_many_tentative_left > 0 and user != cf.moi:
             await message.channel.send(f"```\nLe mot de passe n'est pas le bon, il vous reste "
                                        f"{how_many_tentative_left} tentatives.```\n")
             cf.user_infos[user]['tentative'] -= 1
 
-        elif is_registrating and is_channel_private and how_many_tentative_left == 0:
+        elif is_registrating and is_channel_private and how_many_tentative_left == 0 and user != cf.moi:
             await message.channel.send(f"```\nVous avez épuisé toutes vos tentatives, la demande du rôle "
                                        f"{cf.user_infos[user]['requested_roles'][0]} est annulées, vous "
                                        f"pourrez la réessayer plus tard.```\n")
@@ -247,7 +250,7 @@ async def message_watching_on_remove(payload):
 
 
 def remove_on_leaving(member):
-    if member.id in cf.user_infos.key():
+    if member.id in cf.user_infos.keys():
         cf.user_infos.pop(member.id)
 
 

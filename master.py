@@ -1,9 +1,9 @@
 import os
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 import fonctions as fc
 import variables as vr
 
-load_dotenv(dotenv_path=".env")
+#load_dotenv(dotenv_path=".env")
 
 client = vr.client
 
@@ -16,8 +16,8 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    await fc.registration(message)
     await fc.analyse_answer_password(message)
+    await fc.registration(message)
     await fc.get_info_mps(message)
 
 
