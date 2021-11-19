@@ -4,22 +4,29 @@ from discord import Forbidden
 import variables as vr
 import config as cf
 import hashlib
+import logging as log
 
+format = '%(asctime)s - %(levelname)s - %(message)s'
+log.basicConfig(format=format, filename="log_buddy.log", level=log.INFO)
 
 def ready():
     print("{} est prêt !".format(vr.client.user.name))
     vr.guild = vr.client.get_guild(cf.id_guild)
+    log.info("Bot redémarré")
 
 
 async def giving_all_member_arriving_role():
     get_icone_id()
     member_reacted = await get_member_reacted()
+    added = []
     if member_reacted is None:
         for member in vr.guild.members:
             if member.id != cf.moi: await member.add_roles(vr.guild.get_role(cf.arriving_role_id))
     else:
         for member in vr.guild.members:
             if member.id != cf.moi and member not in member_reacted: await member.add_roles(vr.guild.get_role(cf.arriving_role_id))
+            added = added.append(member.name)
+    log.info(f"Les rôles d'arrivants ont été distribué à : {added}")
 
 
 def get_icone_id():
@@ -51,6 +58,8 @@ async def giving_entry_permissions(payload):
     if is_message_entry and is_reaction_coche:
         await payload.member.add_roles(vr.guild.get_role(cf.basic_member_role_id))
         await payload.member.remove_roles(vr.guild.get_role(cf.arriving_role_id))
+        log.info(f"Rôle d'arrivant enlevé à {payload.member.name}")
+        log.info(f"Rôle membre distribué à : {payload.member.name}")
 
 
 async def removing_entry_permissions(payload):
@@ -59,6 +68,7 @@ async def removing_entry_permissions(payload):
     if is_message_entry and is_reaction_coche:
         member = vr.guild.get_member(payload.user_id)
         await member.add_roles(vr.guild.get_role(cf.arriving_role_id))
+        log.info(f"Rôle d'arrivant donné à {payload.member.name}")
 
 
 async def get_roles_requested(message):
