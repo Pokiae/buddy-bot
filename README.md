@@ -6,4 +6,6 @@ Buddy Bot is a Discord bot which has been created to manage roles attribution in
 
 ## How do I configure it ?    
 
-### 1.
+### 1. Enter your token (master.py)    
+
+You just have to 
